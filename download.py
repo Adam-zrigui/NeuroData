@@ -3,18 +3,22 @@ import requests, pathlib, time
 BASE = "https://www.ebi.ac.uk/europepmc/webservices/rest"
 out = pathlib.Path("papers"); out.mkdir(exist_ok=True)
 
+
 r = requests.get(f"{BASE}/search", params={
-    "query": 'TITLE:"fear conditioning"  AND OPEN_ACCESS:y AND SRC:MED AND ("mouse" OR "mice" OR "rat" OR "rats")',
-    "format": "json", "pageSize": 50, "resultType": "lite",
+    "query": 'TITLE:"fear conditioning"  AND OPEN_ACCESS:y AND SRC:MED AND (ABSTRACT:"mouse" OR ABSTRACT:"mice" OR ABSTRACT:"rat" OR ABSTRACT:"rats")',
+    "format": "json", "pageSize": 1000, "resultType": "lite",
 })
 r.raise_for_status()
-
-for p in r.json()["resultList"]["result"]:
+data = r.json()
+print(f"Found {data['hitCount']} papers matching the query")
+for p in data["resultList"]["result"]:
     pmcid = p.get("pmcid")
-  
+ 
     if not pmcid:
          print(f"Skipping {p.get('title')} because it has no PMCID")
          continue
+    if (out / f"{pmcid}.xml").exists():
+        continue
     x = requests.get(f"{BASE}/{pmcid}/fullTextXML")
     
     if x.ok:
@@ -23,4 +27,4 @@ for p in r.json()["resultList"]["result"]:
     else:
         print(f"Failed to download {pmcid}: {x.status_code}")
 
-    time.sleep(0.5)  # keep the request rate low
+    time.sleep(0.5) 
