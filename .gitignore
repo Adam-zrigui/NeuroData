@@ -3,3 +3,4 @@ papers/
 .env
 papers.json
 extractions.json
+__pycache__/

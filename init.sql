@@ -15,7 +15,9 @@ CREATE TABLE extractions (
   n_pairings text,
   tone_duration_s text,
   apparatus text,
-  sources jsonb
+  sources jsonb,
+  shock_values double precision[],
+  n_pairings_int integer
 );
 
 CREATE TABLE chunks (
