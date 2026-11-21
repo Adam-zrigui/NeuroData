@@ -1,22 +1,23 @@
-import json, time
-import os
-import traceback
+import json, os, time
 from dotenv import load_dotenv
-from google import genai
+from openai import OpenAI
 from pydantic import BaseModel
-from google.genai import types
+
 load_dotenv()
-from google.genai import types
-client = genai.Client(http_options=types.HttpOptions(timeout=120 * 1000))
-out = json.load(open("extractions.json", encoding="utf-8")) if os.path.exists("extractions.json") else {}
+client = OpenAI(base_url="https://openrouter.ai/api/v1",
+                api_key=os.getenv("OPENROUTER_API_KEY"),
+                timeout=90, max_retries=1)
+MODEL = "nvidia/nemotron-3-ultra-550b-a55b:free"
+LIMIT = 100          # stop after this many papers, to test first
 
 PROMPT = """You extract parameters from the methods section of a rodent fear conditioning paper.
 Rules:
 - Report only what the text states. If a parameter is not stated, set value and source to null.
 - "source" must be one sentence copied exactly from the text.
 - Never infer or guess.
+- Copy values exactly as written, including units (for example "0.8 mA").
 - Report a number only if the text states it directly. Do not count or calculate it.
-
+- Copy exactly one sentence. Never join sentences.
 METHODS TEXT:
 """
 
@@ -24,6 +25,8 @@ METHODS TEXT:
 class Field(BaseModel):
     value: str | None
     source: str | None
+
+
 class Extraction(BaseModel):
     species: Field
     strain: Field
@@ -31,31 +34,64 @@ class Extraction(BaseModel):
     n_pairings: Field
     tone_duration_s: Field
     apparatus: Field
-def extract_parameters(methods_text: str) -> dict:
-    print("sending", len(methods_text), "chars...")
-    interaction = client.interactions.create(
-        model="gemini-3.6-flash",
-        input=PROMPT + methods_text,
-        response_format={
-            "type": "text",
-            "mime_type": "application/json",
-            "schema": Extraction.model_json_schema(),
-        },
+
+
+def extract_parameters(methods_text):
+    r = client.chat.completions.create(
+        model=MODEL,
+        messages=[{"role": "user", "content": PROMPT + methods_text}],
+        response_format={"type": "json_schema",
+                         "json_schema": {"name": "extraction",
+                                         "schema": Extraction.model_json_schema()}},
     )
-    print("got response")
-    return Extraction.model_validate_json(interaction.output_text).model_dump()
-records = json.load(open("papers.json"))
-            
-out = json.load(open("extractions.json", encoding="utf-8")) if os.path.exists("extractions.json") else {}
+    content = r.choices[0].message.content
+    if not content:
+        raise RuntimeError("empty response")
+    return Extraction.model_validate_json(content).model_dump()
 
 
+def extract_patiently(text, tries=5):
+    for i in range(tries):
+        try:
+            return extract_parameters(text)
+        except Exception as e:
+            if "429" not in str(e) and "503" not in str(e):
+                raise
+            wait = 60 * (i + 1)
+            print(f"busy, waiting {wait}s")
+            time.sleep(wait)
+    raise RuntimeError("gave up")
+
+
+def load(path):
+    return json.load(open(path, encoding="utf-8")) if os.path.exists(path) else {}
+
+
+records = json.load(open("papers.json", encoding="utf-8"))
+out = load("extractions_qwen.json")
+done = set(load("extractions.json")) | set(out)
+
+processed = 0
+failures = 0
 for rec in records:
-    if rec["pmcid"] in out:
-        continue                      # already done: skip
+    if rec["pmcid"] in done:
+        continue
+    if processed >= LIMIT:
+        break
+    t0 = time.time()
     try:
-        out[rec["pmcid"]] = extract_parameters(rec["methods_text"])
+        out[rec["pmcid"]] = extract_patiently(rec["methods_text"])
+        failures = 0
     except Exception as e:
         print("failed", rec["pmcid"], e)
+        failures += 1
+        if failures >= 3:
+            print("3 failures in a row, stopping")
+            break
         continue
-    json.dump(out, open("extractions.json", "w", encoding="utf-8"), indent=1, ensure_ascii=False)
+    processed += 1
+    json.dump(out, open("extractions_qwen.json", "w", encoding="utf-8"),
+              indent=1, ensure_ascii=False)
+    print(f"{rec['pmcid']} done in {time.time() - t0:.0f}s")
     time.sleep(5)
+    
