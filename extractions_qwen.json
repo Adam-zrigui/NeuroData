@@ -1064,5 +1064,499 @@
    "value": "Sound-attenuated isolation cubicles (Ugo Basile, Gemonio, Italy) were utilized. Each Isolation cubicle [635(w) x 550(d) x 580(h)mm] included a fan, lights, and an overhead camera (infrared CCD, Noldus Leesburg, VA, United States). Each cubicle was equipped with a rat cage for fear conditioning [size 270 (w) x 320 (l) x 410 (h) mm], with an electrified grid floor and transparent walls (Ugo Basile catalog number 46002-D03).",
    "source": "Sound-attenuated isolation cubicles (Ugo Basile, Gemonio, Italy) were utilized. Each Isolation cubicle [635(w) x 550(d) x 580(h)mm] included a fan, lights, and an overhead camera (infrared CCD, Noldus Leesburg, VA, United States). Each cubicle was equipped with a rat cage for fear conditioning [size 270 (w) x 320 (l) x 410 (h) mm], with an electrified grid floor and transparent walls (Ugo Basile catalog number 46002-D03)."
   }
+ },
+ "PMC13691938": {
+  "species": {
+   "value": "Sprague-Dawley rats",
+   "source": "Young adult male (250–275 g, ∼8–9 weeks old) and female (225–250 g, ∼11 weeks old) Sprague-Dawley rats were purchased from Envigo."
+  },
+  "strain": {
+   "value": "Sprague-Dawley",
+   "source": "Young adult male (250–275 g, ∼8–9 weeks old) and female (225–250 g, ∼11 weeks old) Sprague-Dawley rats were purchased from Envigo."
+  },
+  "shock_intensity_ma": {
+   "value": "0.42 mA",
+   "source": "Animals then received 6 pairings of an auditory conditioned stimulus (CS; 20-s tone, 4–8 kHz, ∼75–80 dB) co-terminating with an unconditioned stimulus (US; 0.42 mA footshock, 0.5 s duration)."
+  },
+  "n_pairings": {
+   "value": "6",
+   "source": "Animals then received 6 pairings of an auditory conditioned stimulus (CS; 20-s tone, 4–8 kHz, ∼75–80 dB) co-terminating with an unconditioned stimulus (US; 0.42 mA footshock, 0.5 s duration)."
+  },
+  "tone_duration_s": {
+   "value": "20 s",
+   "source": "Animals then received 6 pairings of an auditory conditioned stimulus (CS; 20-s tone, 4–8 kHz, ∼75–80 dB) co-terminating with an unconditioned stimulus (US; 0.42 mA footshock, 0.5 s duration)."
+  },
+  "apparatus": {
+   "value": "standard fear conditioning chambers (Lafayette Instrument Company, Lafayette, IN) housed within sound-attenuating cabinets and equipped with a stainless-steel grid floor capable of delivering footshock",
+   "source": "Fear conditioning was conducted in standard fear conditioning chambers (Lafayette Instrument Company, Lafayette, IN) housed within sound-attenuating cabinets and equipped with a stainless-steel grid floor capable of delivering footshock."
+  }
+ },
+ "PMC13701837": {
+  "species": {
+   "value": "Wistar rats",
+   "source": "Twenty-four adolescent female Wistar rats (OMD, Lublin, Poland) were used in the study."
+  },
+  "strain": {
+   "value": "Wistar",
+   "source": "Twenty-four adolescent female Wistar rats (OMD, Lublin, Poland) were used in the study."
+  },
+  "shock_intensity_ma": {
+   "value": "1.5 mA",
+   "source": "In context A, animals assigned to the fear-conditioned (FC) groups were exposed twice to a 30 s auditory cue (80 dB), with a 2 s foot shock (1.5 mA) delivered during the final 2 s of each cue."
+  },
+  "n_pairings": {
+   "value": "2",
+   "source": "In context A, animals assigned to the fear-conditioned (FC) groups were exposed twice to a 30 s auditory cue (80 dB), with a 2 s foot shock (1.5 mA) delivered during the final 2 s of each cue."
+  },
+  "tone_duration_s": {
+   "value": "30 s",
+   "source": "In context A, animals assigned to the fear-conditioned (FC) groups were exposed twice to a 30 s auditory cue (80 dB), with a 2 s foot shock (1.5 mA) delivered during the final 2 s of each cue."
+  },
+  "apparatus": {
+   "value": "sound-attenuated conditioning chamber (Ugo Basile S.R.L., Gemonio, Italy)",
+   "source": "Following a two-day handling period, animals underwent fear conditioning on experimental day 1 (postnatal day 30) in a sound-attenuated conditioning chamber (Ugo Basile S.R.L., Gemonio, Italy)."
+  }
+ },
+ "PMC13703393": {
+  "species": {
+   "value": "mouse",
+   "source": "In this study, we used a DJ-1 KO (DJ-1−/−) mouse model established by Goldberg et al. [15]."
+  },
+  "strain": {
+   "value": "DJ-1 KO (DJ-1−/−)",
+   "source": "In this study, we used a DJ-1 KO (DJ-1−/−) mouse model established by Goldberg et al. [15]."
+  },
+  "shock_intensity_ma": {
+   "value": "0.7 V",
+   "source": "A total of 20 s after the light turned on, animals received a 2 s shock (0.7 V), in 3 min intervals, during 9 min total."
+  },
+  "n_pairings": {
+   "value": null,
+   "source": null
+  },
+  "tone_duration_s": {
+   "value": null,
+   "source": null
+  },
+  "apparatus": {
+   "value": null,
+   "source": null
+  }
+ },
+ "PMC13717115": {
+  "species": {
+   "value": "null",
+   "source": "null"
+  },
+  "strain": {
+   "value": "null",
+   "source": "null"
+  },
+  "shock_intensity_ma": {
+   "value": "0.5 mA",
+   "source": "Each CS co‐terminated with a foot shock serving as an unconditioned stimulus (US; 0.5 mA, 2 s each)."
+  },
+  "n_pairings": {
+   "value": "five",
+   "source": "Each mouse received five pure‐tone CS presentations (3500 Hz, 80 dB, 20 s), delivered at 120 s intervals."
+  },
+  "tone_duration_s": {
+   "value": "20 s",
+   "source": "Each mouse received five pure‐tone CS presentations (3500 Hz, 80 dB, 20 s), delivered at 120 s intervals."
+  },
+  "apparatus": {
+   "value": "black‐walled chambers (17 cm × 17 cm × 25 cm) with stainless‐steel grid floors",
+   "source": "Context A consisted of black‐walled chambers (17 cm × 17 cm × 25 cm) with stainless‐steel grid floors and was cleaned with 75% ethanol."
+  }
+ },
+ "PMC13728185": {
+  "species": {
+   "value": "Human",
+   "source": "Eighty-seven healthy adults (43 males and 44 females) with an age range of 18–60 years (mean ± SD = 28.79 ± 9.20 years) were recruited at The University of Texas Health Science Center at Houston (UTHouston)."
+  },
+  "strain": {
+   "value": null,
+   "source": null
+  },
+  "shock_intensity_ma": {
+   "value": "individually calibrated to be highly aversive but not painful",
+   "source": "Shock intensity was individually calibrated to be highly aversive but not painful."
+  },
+  "n_pairings": {
+   "value": null,
+   "source": null
+  },
+  "tone_duration_s": {
+   "value": "6 s",
+   "source": "Each trial began with presentation of a contextual image (office) for 3 s, followed by presentation of the CS for 6 s."
+  },
+  "apparatus": {
+   "value": "BIOPAC 160 Systems, Goleta, CA",
+   "source": "Conditioned threat learning was induced using visual cues paired with aversive electric foot shocks (BIOPAC 160 Systems, Goleta, CA)."
+  }
+ },
+ "PMC13731926": {
+  "species": {
+   "value": "Sprague–Dawley rats",
+   "source": "One hundred and nineteen experimentally naïve male (n = 59) and female (n = 60) Sprague–Dawley rats were obtained from the breeding colony in the School of Psychology at The University of New South Wales (UNSW)."
+  },
+  "strain": {
+   "value": "Sprague–Dawley",
+   "source": "One hundred and nineteen experimentally naïve male (n = 59) and female (n = 60) Sprague–Dawley rats were obtained from the breeding colony in the School of Psychology at The University of New South Wales (UNSW)."
+  },
+  "shock_intensity_ma": {
+   "value": "0.6 mA",
+   "source": "Following the 2 min baseline period, animals were presented with six pairings of a white noise CS (8 dB above background noise, 10 s duration) and a mild footshock US (0.6 mA, 1 s duration) that co‐terminated with the CS."
+  },
+  "n_pairings": {
+   "value": "six",
+   "source": "Following the 2 min baseline period, animals were presented with six pairings of a white noise CS (8 dB above background noise, 10 s duration) and a mild footshock US (0.6 mA, 1 s duration) that co‐terminated with the CS."
+  },
+  "tone_duration_s": {
+   "value": "10 s",
+   "source": "Following the 2 min baseline period, animals were presented with six pairings of a white noise CS (8 dB above background noise, 10 s duration) and a mild footshock US (0.6 mA, 1 s duration) that co‐terminated with the CS."
+  },
+  "apparatus": {
+   "value": "chamber (13.5 cm long × 9 cm wide × 9 cm high) with flooring and two side walls made of stainless‐steel bars (2 mm diameter)",
+   "source": "On either P17 or P18, each rat was placed into a chamber (13.5 cm long × 9 cm wide × 9 cm high) with flooring and two side walls made of stainless‐steel bars (2 mm diameter)."
+  }
+ },
+ "PMC13732061": {
+  "species": {
+   "value": "Mouse",
+   "source": "Mouse C2C12 myoblast cells (ATCC) were cultured in DMEM [high glucose (4.5 g/L) and GlutaMAX (Gibco 10566)] supplemented with 10% fetal bovine serum and penicillin–streptomycin (50 U/mL)."
+  },
+  "strain": {
+   "value": "C2C12 myoblast cells",
+   "source": "Mouse C2C12 myoblast cells (ATCC) were cultured in DMEM [high glucose (4.5 g/L) and GlutaMAX (Gibco 10566)] supplemented with 10% fetal bovine serum and penicillin–streptomycin (50 U/mL)."
+  },
+  "shock_intensity_ma": {
+   "value": "0.85 mA",
+   "source": "After a 120 s baseline period, animals received two auditory tones (4 kHz, 80 dB, 15 s each), each immediately followed by a 2 s foot shock (0.85 mA) delivered through the grid floor."
+  },
+  "n_pairings": {
+   "value": "two",
+   "source": "After a 120 s baseline period, animals received two auditory tones (4 kHz, 80 dB, 15 s each), each immediately followed by a 2 s foot shock (0.85 mA) delivered through the grid floor."
+  },
+  "tone_duration_s": {
+   "value": "15 s",
+   "source": "After a 120 s baseline period, animals received two auditory tones (4 kHz, 80 dB, 15 s each), each immediately followed by a 2 s foot shock (0.85 mA) delivered through the grid floor."
+  },
+  "apparatus": {
+   "value": "sound-attenuated conditioning chamber (W 17 cm × D 17 cm × H 25 cm) equipped with a light, speaker, and vanilla odor",
+   "source": "For tone cued fear conditioning, mice were placed in a sound-attenuated conditioning chamber (W 17 cm × D 17 cm × H 25 cm) equipped with a light, speaker, and vanilla odor."
+  }
+ },
+ "PMC13740138": {
+  "species": {
+   "value": null,
+   "source": null
+  },
+  "strain": {
+   "value": null,
+   "source": null
+  },
+  "shock_intensity_ma": {
+   "value": null,
+   "source": null
+  },
+  "n_pairings": {
+   "value": null,
+   "source": null
+  },
+  "tone_duration_s": {
+   "value": null,
+   "source": null
+  },
+  "apparatus": {
+   "value": null,
+   "source": null
+  }
+ },
+ "PMC13742463": {
+  "species": {
+   "value": null,
+   "source": null
+  },
+  "strain": {
+   "value": null,
+   "source": null
+  },
+  "shock_intensity_ma": {
+   "value": null,
+   "source": null
+  },
+  "n_pairings": {
+   "value": null,
+   "source": null
+  },
+  "tone_duration_s": {
+   "value": null,
+   "source": null
+  },
+  "apparatus": {
+   "value": null,
+   "source": null
+  }
+ },
+ "PMC13743872": {
+  "species": {
+   "value": "human",
+   "source": "The present analyses utilize data from a cohort study exploring the effects of early adversity in young children, the Wellness Health and Life Experiences (WHALE) Study (Murgueitio et al., 2024b)."
+  },
+  "strain": {
+   "value": null,
+   "source": null
+  },
+  "shock_intensity_ma": {
+   "value": null,
+   "source": null
+  },
+  "n_pairings": {
+   "value": null,
+   "source": null
+  },
+  "tone_duration_s": {
+   "value": null,
+   "source": null
+  },
+  "apparatus": {
+   "value": "MindWare Technologies (Gahanna, OH, USA) BioLab acquisition software",
+   "source": "Physiological data was collected continuously using MindWare Technologies (Gahanna, OH, USA) BioLab acquisition software throughout the task."
+  }
+ },
+ "PMC13749932": {
+  "species": {
+   "value": "C57BL/6N",
+   "source": "Experiments were performed on adult C57BL/6N male mice between 8 and 16 weeks of age (SLC Japan)."
+  },
+  "strain": {
+   "value": "C57BL/6N",
+   "source": "Experiments were performed on adult C57BL/6N male mice between 8 and 16 weeks of age (SLC Japan)."
+  },
+  "shock_intensity_ma": {
+   "value": "0.35 mA",
+   "source": "On the training day, mice were placed in the conditioning chamber and given an electrical foot shock (0.35 mA) for 2 s at 58 sec from the start of the training."
+  },
+  "n_pairings": {
+   "value": null,
+   "source": null
+  },
+  "tone_duration_s": {
+   "value": null,
+   "source": null
+  },
+  "apparatus": {
+   "value": "small conditioning chamber (14 cm L × 16 cm W × 12 cm H) with clear side walls and a steel rod floor, which was set in a sound-attenuating box (O’Hara & Co., Ltd)",
+   "source": "Training and recall test were conducted in a small conditioning chamber (14 cm L × 16 cm W × 12 cm H) with clear side walls and a steel rod floor, which was set in a sound-attenuating box (O’Hara & Co., Ltd)."
+  }
+ },
+ "PMC7722643": {
+  "species": {
+   "value": "mouse",
+   "source": "Young adult C57BL/6N mice (8 weeks old; Charles River) were used for conditioning experiments."
+  },
+  "strain": {
+   "value": "C57BL/6N",
+   "source": "Young adult C57BL/6N mice (8 weeks old; Charles River) were used for conditioning experiments."
+  },
+  "shock_intensity_ma": {
+   "value": "0.2 mA",
+   "source": "Accompanying footshock (0.2 mA) was delivered for 2 seconds, starting at 23 seconds into each 30‐s movement period (Figure 1A)."
+  },
+  "n_pairings": {
+   "value": "3",
+   "source": "Mice were first allowed to habituate to the context for 22.5 minutes, and subsequently three 30‐s grating movements were carried out at 22.5‐23.0, 23.5‐24.0, and 24.5‐25 minutes, respectively."
+  },
+  "tone_duration_s": {
+   "value": "30",
+   "source": "Mice were first allowed to habituate to the context for 22.5 minutes, and subsequently three 30‐s grating movements were carried out at 22.5‐23.0, 23.5‐24.0, and 24.5‐25 minutes, respectively."
+  },
+  "apparatus": {
+   "value": "sound insulating box (white walls, 60 cm deep × 50 cm wide × 53 cm high) equipped with an overhead charged‐coupled device camera and open‐top transparent cylinder (diameter, 30 cm) with printed black standing bars was placed over the electric‐shock chamber (15 cm deep × 17 cm wide × 13 cm high)",
+   "source": "A sound insulating box (white walls, 60 cm deep × 50 cm wide × 53 cm high) equipped with an overhead charged‐coupled device camera and open‐top transparent cylinder (diameter, 30 cm) with printed black standing bars was placed over the electric‐shock chamber (15 cm deep × 17 cm wide × 13 cm high)."
+  }
+ },
+ "PMC7820254": {
+  "species": {
+   "value": "rat",
+   "source": "ACI/NJcl and BN/SsNSlc rats were purchased from CLEA Japan, Inc. (Meguro, Tokyo, Japan) and Japan SLC, Inc. (Hamamatsu, Shizuoka, Japan), respectively."
+  },
+  "strain": {
+   "value": "ACI/NJcl",
+   "source": "ACI/NJcl and BN/SsNSlc rats were purchased from CLEA Japan, Inc. (Meguro, Tokyo, Japan) and Japan SLC, Inc. (Hamamatsu, Shizuoka, Japan), respectively."
+  },
+  "shock_intensity_ma": {
+   "value": "0.3 mA",
+   "source": "For the conditioning, white noise (55 dB) and electrical foot shock (0.3 mA, 2 s) were presented simultaneously three times, from 120–150 s, 240–270 s, and 360–390 s."
+  },
+  "n_pairings": {
+   "value": "three",
+   "source": "For the conditioning, white noise (55 dB) and electrical foot shock (0.3 mA, 2 s) were presented simultaneously three times, from 120–150 s, 240–270 s, and 360–390 s."
+  },
+  "tone_duration_s": {
+   "value": null,
+   "source": null
+  },
+  "apparatus": {
+   "value": "box (W 327 mm, D 250 mm, H 284 mm, 100 lx)",
+   "source": "On the first day, conditioning was conducted in a box (W 327 mm, D 250 mm, H 284 mm, 100 lx) in which the rat was allowed to move freely for 8 min."
+  }
+ },
+ "PMC8535510": {
+  "species": {
+   "value": "mouse",
+   "source": "Colonies of Dp(16)1Yey, Dp(17)1Yey and Dp(10)1Yey (abbreviated Dp16, Dp17 and Dp10, respectively) were established from breeding pairs obtained from YE Yu and maintained by crossing with C57BL/6J wild type mice obtained from The Jackson Laboratory."
+  },
+  "strain": {
+   "value": "Dp(16)1Yey, Dp(17)1Yey and Dp(10)1Yey (abbreviated Dp16, Dp17 and Dp10, respectively) and C57BL/6J wild type mice; DBA/2J",
+   "source": "Colonies of Dp(16)1Yey, Dp(17)1Yey and Dp(10)1Yey (abbreviated Dp16, Dp17 and Dp10, respectively) were established from breeding pairs obtained from YE Yu and maintained by crossing with C57BL/6J wild type mice obtained from The Jackson Laboratory. A colony of DBA/2J was established from breeding pairs obtained from The Jackson Laboratory."
+  },
+  "shock_intensity_ma": {
+   "value": "0.7 mA",
+   "source": "Briefly, in a context-shock (CS) training session, mice were placed in a novel cage (Med Associates, St. Albans, VT, USA, Modular Mouse Test Chamber), allowed to explore for three minutes and then given a single electric shock (2 s, 0.7 mA, constant electric current)."
+  },
+  "n_pairings": {
+   "value": "a single electric shock",
+   "source": "Briefly, in a context-shock (CS) training session, mice were placed in a novel cage (Med Associates, St. Albans, VT, USA, Modular Mouse Test Chamber), allowed to explore for three minutes and then given a single electric shock (2 s, 0.7 mA, constant electric current)."
+  },
+  "tone_duration_s": {
+   "value": null,
+   "source": null
+  },
+  "apparatus": {
+   "value": "Med Associates, St. Albans, VT, USA, Modular Mouse Test Chamber",
+   "source": "Briefly, in a context-shock (CS) training session, mice were placed in a novel cage (Med Associates, St. Albans, VT, USA, Modular Mouse Test Chamber), allowed to explore for three minutes and then given a single electric shock (2 s, 0.7 mA, constant electric current)."
+  }
+ },
+ "PMC8685270": {
+  "species": {
+   "value": "Long Evans rats",
+   "source": "Subjects were 23 (7 males, 16 females) experimentally naive, adult Long Evans rats (250–450 g) obtained from the breeding facility maintained by the School of Psychology at the University of New South Wales."
+  },
+  "strain": {
+   "value": "Long Evans",
+   "source": "Subjects were 23 (7 males, 16 females) experimentally naive, adult Long Evans rats (250–450 g) obtained from the breeding facility maintained by the School of Psychology at the University of New South Wales."
+  },
+  "shock_intensity_ma": {
+   "value": "0.8 mA",
+   "source": "The US was a 0.8 mA 1 s foot shock."
+  },
+  "n_pairings": {
+   "value": "four",
+   "source": "We reduced the number of S1-shock pairings (two in total) relative to the number used in Experiments 1a and 1b (four) as we wanted to increase the sensitivity of the sensory preconditioning protocol to any potential effect of naloxone."
+  },
+  "tone_duration_s": {
+   "value": "10 s",
+   "source": "Each presentation of S1 lasted for 10 s and each presentation of S2 lasted for 30 s."
+  },
+  "apparatus": {
+   "value": "eight identical chambers (30 cm length × 26 cm width × 30 cm height)",
+   "source": "Training and testing occurred in a set of eight identical chambers (30 cm length × 26 cm width × 30 cm height)."
+  }
+ },
+ "PMC9388582": {
+  "species": {
+   "value": "Long-Evans rats",
+   "source": "Eighty-six Long-Evans rats (3–4 months old; 44 females and 42 males, RRID:RGD_2308852), purchased from Charles-Rivers Laboratories, were initially pair-housed by sex for 5–7 days of acclimatization in a climate-controlled vivarium (accredited by the Association for Assessment and Accreditation of Laboratory Animal Care), with a reversed 12-h light/dark cycle (lights on at 7 PM)."
+  },
+  "strain": {
+   "value": "Long-Evans",
+   "source": "Eighty-six Long-Evans rats (3–4 months old; 44 females and 42 males, RRID:RGD_2308852), purchased from Charles-Rivers Laboratories, were initially pair-housed by sex for 5–7 days of acclimatization in a climate-controlled vivarium (accredited by the Association for Assessment and Accreditation of Laboratory Animal Care), with a reversed 12-h light/dark cycle (lights on at 7 PM)."
+  },
+  "shock_intensity_ma": {
+   "value": "2.5 mA",
+   "source": "(ii) 1 s, 2.5 mA shock US was delivered to the animal’s dorsal neck/back region via a headstage tethered to a stimulus-isolator (Bak);"
+  },
+  "n_pairings": {
+   "value": null,
+   "source": null
+  },
+  "tone_duration_s": {
+   "value": "24.1 s",
+   "source": "Fear conditioning (day 1) commenced after 3 min of baseline in the chamber by exposing animals to 24.1 s tone CS (3 kHz, 80 dB) that co-terminated with 1 s dorsal neck/body shock (2.5 mA)."
+  },
+  "apparatus": {
+   "value": "standard conditioning chamber",
+   "source": "The remaining 16 rats (4 females and 4 males, restricted-food; 4 females and 4 males, ad lib-food) were subjected to one-trial tone fear conditioning in a standard conditioning chamber38 instead of an ecologically-relevant foraging arena."
+  }
+ },
+ "PMC9588004": {
+  "species": {
+   "value": "Male Sprague–Dawley rats",
+   "source": "Male Sprague–Dawley rats (225–250 g) were used in the study (Harlan Laboratories, Jerusalem, Israel)."
+  },
+  "strain": {
+   "value": "Male Sprague–Dawley rats",
+   "source": "Male Sprague–Dawley rats (225–250 g) were used in the study (Harlan Laboratories, Jerusalem, Israel)."
+  },
+  "shock_intensity_ma": {
+   "value": "2 mA",
+   "source": "Five minutes after the start of the training, animals were presented with a pairing of tone (conditioned stimulus (CS)—30 s, 5 kHz, 80 dB) that co-terminated with a foot shock (unconditioned stimulus (US)—0.5 s, 2 mA)."
+  },
+  "n_pairings": {
+   "value": null,
+   "source": null
+  },
+  "tone_duration_s": {
+   "value": "30 s",
+   "source": "Five minutes after the start of the training, animals were presented with a pairing of tone (conditioned stimulus (CS)—30 s, 5 kHz, 80 dB) that co-terminated with a foot shock (unconditioned stimulus (US)—0.5 s, 2 mA)."
+  },
+  "apparatus": {
+   "value": "Coulbourn Instruments",
+   "source": "Rats were habituated for 2 days to the training chamber (Coulbourn Instruments) for 30 min each day and briefly to the injection pump."
+  }
+ },
+ "PMC9773722": {
+  "species": {
+   "value": "Sprague–Dawley rats",
+   "source": "Forty‐one 8‐week‐old male Sprague–Dawley rats (Institute for Animal Reproduction, Ibaraki, Japan) were used."
+  },
+  "strain": {
+   "value": "Sprague–Dawley",
+   "source": "Forty‐one 8‐week‐old male Sprague–Dawley rats (Institute for Animal Reproduction, Ibaraki, Japan) were used."
+  },
+  "shock_intensity_ma": {
+   "value": "0.5 mA",
+   "source": "The foot shock US (2‐seconds scrambled foot shocks, 0.5 mA) was co‐terminated with the CS."
+  },
+  "n_pairings": {
+   "value": "four",
+   "source": "The CS‑US pairings were repeated four times with variable intertrial intervals (ITIs) on average at 120 seconds."
+  },
+  "tone_duration_s": {
+   "value": "20 seconds",
+   "source": "During the fear conditioning, animals were placed into the chamber and received pairings of auditory CS (20 seconds, 65 dB, 10 kHz) and electric shock US after a baseline period (120 seconds)."
+  },
+  "apparatus": {
+   "value": "square transparent Plexiglas chamber with a grid floor (O'Hara & CO., LTD., Tokyo, Japan) which is in a sound‐isolating box (Muromachi Kikai CO., LTD., Tokyo, Japan)",
+   "source": "In context A, animals were placed in a square transparent Plexiglas chamber with a grid floor (O'Hara & CO., LTD., Tokyo, Japan) which is in a sound‐isolating box (Muromachi Kikai CO., LTD., Tokyo, Japan)."
+  }
+ },
+ "PMC9797209": {
+  "species": {
+   "value": "Sprague Dawley rats",
+   "source": "Male (average weight at testing: 445.87 g; total N = 101) and female (average weight at testing: 267.32 g; total N = 99) Sprague Dawley rats were purchased from a commercial breeder (Charles River) and acclimated to the vivarium for 7 d before the start of handling."
+  },
+  "strain": {
+   "value": "Sprague Dawley",
+   "source": "Male (average weight at testing: 445.87 g; total N = 101) and female (average weight at testing: 267.32 g; total N = 99) Sprague Dawley rats were purchased from a commercial breeder (Charles River) and acclimated to the vivarium for 7 d before the start of handling."
+  },
+  "shock_intensity_ma": {
+   "value": "0.3 mA, 0.5 mA, 1 mA",
+   "source": "Each rat received footshocks representing one of the following three shock intensities: 0.3 mA (mild shock intensity), 0.5 mA (moderate shock intensity), or 1 mA (high shock intensity)."
+  },
+  "n_pairings": {
+   "value": "seven",
+   "source": "Following a 5 min baseline period with no stimulus presentations, the rats were sequentially exposed to a total of seven CS–US pairings (Fig. 1A)."
+  },
+  "tone_duration_s": {
+   "value": "30 s",
+   "source": "As CS, we used a 30 s 4 kHz tone played in each chamber by a speaker at ∼75 dB as measured at the center of the chamber (∼20 cm from the speaker)."
+  },
+  "apparatus": {
+   "value": "sound-attenuating conditioning chambers (model H10-24A Rat Test Cage, Coulbourn Instruments), consisting of Plexiglas, metal walls, and a metal grid floor for the delivery of footshocks (model H10-11R-TC Shock Floor, Coulbourn Instruments)",
+   "source": "They were then placed in sound-attenuating conditioning chambers (model H10-24A Rat Test Cage, Coulbourn Instruments), consisting of Plexiglas, metal walls, and a metal grid floor for the delivery of footshocks (model H10-11R-TC Shock Floor, Coulbourn Instruments)."
+  }
  }
 }

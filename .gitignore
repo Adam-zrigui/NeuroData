@@ -4,3 +4,4 @@ papers/
 papers.json
 extractions.json
 __pycache__/
+*.json
