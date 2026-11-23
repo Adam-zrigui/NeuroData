@@ -4,7 +4,9 @@ from dotenv import load_dotenv
 from openai import OpenAI
 from pydantic import BaseModel
 from textutil import squash
-
+import json
+cues = json.load(open("cue_types.json", encoding="utf-8"))
+print({k: v["cue_type"] for k, v in cues.items() if v["cue_type"] in ("none", "unclear")})
 load_dotenv()
 client = OpenAI(base_url="https://openrouter.ai/api/v1",
                 api_key=os.getenv("OPENROUTER_API_KEY"),
@@ -55,7 +57,11 @@ for pmcid, f in clean.items():
     try:
         cue = ask(text).model_dump()
     except Exception as e:
-        print("failed", pmcid, str(e)[:100])
+        msg = str(e)
+        print("failed", pmcid, msg[:100])
+        if "per-day" in msg:
+            print("daily free limit reached, stopping. Rerun tomorrow.")
+            break
         continue
     if cue["source"] and squash(cue["source"]) not in squash(text):
         cue = {"cue_type": "unclear", "source": None}     # same rule: no real quote, no value

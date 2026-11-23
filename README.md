@@ -1,102 +1,143 @@
-# NeuroRAG
+# NeuroData Finder
 
-NeuroRAG is a research prototype for finding rodent fear-conditioning studies by experimental methods. It builds a small corpus from open-access Europe PMC articles, extracts study details from the methods text, and combines structured filters with vector similarity to rank relevant papers.
+NeuroData Finder helps students and small research groups find public neuroimaging datasets from a plain-language request. The v1 scope is OpenNeuro MRI/fMRI metadata. Search returns ranked dataset links and shows which stated requirements are met, not met, or not stated, with source evidence where available.
 
-## What it does
+The project indexes metadata only. It does not download, store, or serve imaging files. Results are suggestions; read the source dataset's documentation before relying on a match.
 
-- Searches Europe PMC for open-access papers about fear conditioning in mice and rats, then downloads available full-text XML.
-- Extracts methods sections, article titles, and licence links from the XML.
-- Uses an OpenRouter-compatible chat model to extract experimental details and turn natural-language requests into filters. Extracted values are checked against quoted source text; a rule-based query parser is available as a fallback.
-- Stores papers, extracted fields, and 384-dimensional text embeddings in PostgreSQL with pgvector.
-- Ranks matching papers and prints their metadata, source quotations, and Europe PMC links.
+## Current workflow
 
-This repository contains research scripts and intermediate data workflows; it does not currently provide a web interface or a packaged command-line application.
+The existing root-level Python scripts form the workflow:
 
-## Requirements
+1. `download.py` harvests public OpenNeuro GraphQL metadata into a local cache and `openneuro_raw.json`.
+2. `parse.py` normalizes the records and keeps MRI/fMRI datasets in `datasets.json`.
+3. `extract.py` optionally asks an OpenRouter model to fill missing fields from available text. A value is kept only when the model returns an exact source quote. It is capped at 20 dataset calls per run by default and saves a progress file. With no API key, fields stay not stated.
+4. `load.py` idempotently upserts metadata into PostgreSQL; `embed.py` creates local text embeddings.
+5. `search.py` exposes a development CLI. `api.py` exposes `/health`, `/stats`, `/parse`, and `/search` through FastAPI.
 
-- Python 3.10 or newer
-- Docker Compose
-- An OpenRouter API key for LLM-powered extraction and query parsing
-- Enough memory and disk space for the `sentence-transformers/all-MiniLM-L6-v2` model and the paper corpus
+OpenNeuro's official API documentation describes its public GraphQL endpoint for searching datasets and querying dataset/snapshot metadata. This project uses that API and caches responses to limit repeated requests: [OpenNeuro API examples](https://docs.openneuro.org/api.html).
 
-Install the Python packages used by the scripts:
+## Setup
+
+Requirements: Python 3.11+, Docker Compose, and the dependencies listed in `requirements.txt`.
 
 ```bash
-python -m pip install requests lxml python-dotenv openai pydantic "psycopg[binary]" pgvector sentence-transformers
+python -m venv .venv
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+Copy-Item .env.example .env
 ```
+
+Set `DB_PASSWORD` in `.env` if you do not want the local development default. `OPENROUTER_API_KEY` is optional; it enables LLM extraction and natural-language filter parsing. Keep `.env` private.
+
+Start the database and create the schema:
+
+```bash
+docker compose up -d db
+python database.py
+```
+
+The database remains on the named `pgdata` volume. Schema initialization is idempotent and does not delete existing database contents.
+
+## Index and search
+
+```bash
+python download.py
+python parse.py
+python extract.py       # optional; needs OPENROUTER_API_KEY
+python load.py
+python embed.py
+python search.py "resting-state fMRI in adults over 60 with a motor task"
+```
+
+Use a small initial harvest while developing:
+
+```powershell
+$env:OPENNEURO_LIMIT = "25"
+python download.py
+```
+
+The GraphQL responses are cached under `.cache/openneuro`. Set `OPENNEURO_REFRESH=1` to refresh cached pages. `OPENNEURO_LIMIT` limits a harvest, and `OPENNEURO_REQUEST_DELAY` controls the delay between network requests.
+
+To make the parsed filters explicit and editable, pass a JSON file to `--filters`:
+
+```json
+{
+  "modalities": ["fmri"],
+  "species": "human",
+  "population": null,
+  "min_participants": null,
+  "min_age": 60,
+  "max_age": null,
+  "tasks": ["motor"],
+  "longitudinal": null,
+  "resting_state": true,
+  "processed_data_available": null,
+  "field_strength": null
+}
+```
+
+```bash
+python search.py "resting-state fMRI over age 60" --filters my_filters.json
+```
+
+Run the API locally:
+
+```bash
+uvicorn api:app --reload
+```
+
+Open `http://127.0.0.1:8000/docs` to try the request and search endpoints. The `filters` value in `/search` can be edited by the caller before submitting.
+
+Run the in-repository Next.js demo in another terminal (Node.js 20.9 or newer):
+
+```bash
+cd web
+pnpm install
+pnpm dev
+```
+
+Open `http://localhost:3000`. The client calls the FastAPI service at `http://127.0.0.1:8000`; set `NEXT_PUBLIC_API_URL` in `web/.env.local` if the API uses another address. The browser UI shows parsed filters, lets you edit the filter JSON, and displays result evidence. Next.js installation requirements are documented by [Next.js](https://nextjs.org/docs/app/getting-started/installation).
+
+## Search and evidence behavior
+
+- Search combines PostgreSQL full-text ranking and cosine similarity with reciprocal rank fusion.
+- Structured metadata is retained as source fields when OpenNeuro supplies it; extraction does not fill unknowns by guessing.
+- Each extracted field stores its value, status (`stated`, `inferred`, or `not_stated`), and evidence text. Current extraction accepts only quoted evidence that appears verbatim in the supplied metadata text.
+- Parsed filters are returned before searching and can be overridden by the user or client.
+- The result explanation reports `met`, `not_met`, and `not_stated` for each requested criterion.
+- Dataset licence, repository ID, URL, and DOI are retained and shown with results when available.
+- Search request text and caller identifiers are not stored. During harvesting, participant IDs and row-level ages are discarded after reducing them to a participant count and age range.
+
+## Evaluation and release status
+
+`eval_search.py` compares filters-only, keyword-only, vector-only, and hybrid rankings using a human-judged `eval_set.json`. Each entry has a query and a `relevant_dataset_ids` list. It reports precision@10, recall@10, and MRR. Create and review a dataset-specific labeled set before using these metrics as project results. The existing `label_sheet.py`, `labels.csv`, and `score.py` are from the earlier paper-search experiment; their labels are not OpenNeuro relevance judgments.
+
+User interviews, five real search baselines, hand-checking 150 datasets, outside relevance judgments, and OpenNeuro's metadata reuse terms remain validation tasks from the design plan. The repository does not claim those tasks are complete.
 
 ## Configuration
 
-Create a `.env` file in the project root (keep it private):
+Copy `.env.example` to `.env` and configure as needed:
 
-```dotenv
-DB_PASSWORD=choose-a-local-database-password
-OPENROUTER_API_KEY=your-openrouter-api-key
-# Optional: query parser model; defaults to google/gemma-4-26b-a4b-it:free
-QUERY_MODEL=google/gemma-4-26b-a4b-it:free
-```
-
-The extraction scripts also specify their model defaults in code. API usage, model availability, and rate limits depend on your OpenRouter account and the selected model.
-
-## Intended workflow
-
-Run the scripts from the repository root. Several steps expect the output of earlier steps and use fixed filenames.
-
-1. Start PostgreSQL with pgvector:
-
-   ```bash
-   docker compose up -d db
-   ```
-
-2. Download article XML and create the paper/methods corpus:
-
-   ```bash
-   python download.py
-   python parse.py
-   ```
-
-   These create `papers/` and `papers.json`.
-
-3. Extract and verify experimental details. `extract.py` processes up to 100 papers per run and writes `extractions_qwen.json`; `clean.py` verifies available extractions and writes `clean_extractions.json`. `cue_pass.py` optionally classifies the conditioning cue.
-
-   ```bash
-   python extract.py
-   python clean.py
-   python cue_pass.py
-   ```
-
-4. Load papers and extractions, then embed methods chunks:
-
-   ```bash
-   python load.py
-   python embed.py
-   ```
-
-5. Search using a natural-language request, or supply explicit filters and skip LLM parsing:
-
-   ```bash
-   python search.py "mouse fear conditioning with 0.6 mA shock and five pairings"
-   python search.py "fear conditioning" --no-parse --species mouse --shock 0.6 --pairings 5
-   ```
-
-Useful optional search flags are `--species mouse|rat`, `--shock`, `--pairings`, `--tone`, and `--limit`.
-
-## Database setup note
-
-The current `init.sql` schema does not yet define every column referenced by `load.py` and `search.py` (including normalized species and scope fields, and tone-value arrays). As a result, the documented database load/search workflow requires reconciling the schema with those scripts before it will run end to end. The database container initializes `init.sql` only when its data volume is first created.
-
-## Data and licensing
-
-Downloaded articles and generated JSON files are local working data and are ignored by Git. Article availability and reuse terms are determined by each article's licence; check the recorded licence before redistributing article text. Search results include PMCIDs and licence links to help locate the source publications.
-
-## Repository scripts
-
-| Script | Purpose |
+| Variable | Purpose |
 | --- | --- |
-| `download.py`, `parse.py` | Fetch Europe PMC XML and extract article/methods metadata |
-| `extract.py`, `clean.py`, `cue_pass.py` | Extract, verify, and optionally classify experimental parameters |
-| `normalise.py`, `textutil.py` | Normalize values and verify quoted evidence |
-| `load.py`, `embed.py`, `search.py` | Load PostgreSQL data, create embeddings, and search papers |
-| `parse_query.py`, `scope.py` | Parse query filters and inspect out-of-scope records |
-| `eval_parser.py`, `check.py` | Parser evaluation and extraction checks |
+| `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` | Local PostgreSQL connection |
+| `DATABASE_URL` | Optional full PostgreSQL connection string |
+| `OPENNEURO_ENDPOINT` | GraphQL endpoint; defaults to `https://openneuro.org/crn/graphql` |
+| `OPENNEURO_CACHE_DIR` | Cached GraphQL responses |
+| `OPENNEURO_LIMIT` | Optional maximum number of datasets per harvest |
+| `OPENNEURO_REQUEST_DELAY`, `OPENNEURO_REFRESH` | Request delay and optional refresh of cached GraphQL pages |
+| `OPENROUTER_API_KEY` | Optional model access for request parsing and gap extraction |
+| `QUERY_MODEL`, `LLM_MODEL`, `LLM_EXTRACTION_LIMIT` | Model choices and per-run extraction-call cap |
+| `EMBEDDING_MODEL` | Local sentence-transformers embedding model |
+| `CORS_ORIGINS` | Comma-separated browser origins allowed by the local API |
 
+## Data model
+
+Each normalized dataset contains `dataset_id`, repository, title, URL, description, licence, DOI, and evidence-backed values for modalities, species, population, participant count, age range, longitudinal status, tasks, resting-state, processed data, field strength, and paper DOI. Dataset fields are stored in the `datasets` table. No raw imaging files are fetched.
+
+`init.sql` retains the earlier literature-search tables for local data compatibility while adding the dataset table and search indexes. The root-level scripts remain the project entry points; `papers/`, extracted paper JSON, OpenNeuro cache data, and normalized datasets are local artifacts ignored by Git.
+
+OpenNeuro's [metadata reuse policy](https://docs.openneuro.org/policy/general.html) states that public metadata records are CC0 and may be harvested. Individual dataset files are governed by their own recorded licence; this project does not copy or serve those files.
+
+The paper-specific `clean.py`, `cue_pass.py`, `check.py`, `eval_parser.py`, `scope.py`, `textutil.py`, `label_sheet.py`, and `score.py` are retained as research history. The active v1 dataset workflow is the OpenNeuro pipeline documented above; paper labels are not used by dataset search or evaluation.

@@ -1,97 +1,105 @@
-import json, os, time
-from dotenv import load_dotenv
-from openai import OpenAI
-from pydantic import BaseModel
+"""Optional, evidence-constrained extraction of fields from cached metadata text.
 
-load_dotenv()
-client = OpenAI(base_url="https://openrouter.ai/api/v1",
-                api_key=os.getenv("OPENROUTER_API_KEY"),
-                timeout=90, max_retries=1)
-MODEL = "nvidia/nemotron-3-ultra-550b-a55b:free"
-LIMIT = 100          # stop after this many papers, to test first
-
-PROMPT = """You extract parameters from the methods section of a rodent fear conditioning paper.
-Rules:
-- Report only what the text states. If a parameter is not stated, set value and source to null.
-- "source" must be one sentence copied exactly from the text.
-- Never infer or guess.
-- Copy values exactly as written, including units (for example "0.8 mA").
-- Report a number only if the text states it directly. Do not count or calculate it.
-- Copy exactly one sentence. Never join sentences.
-METHODS TEXT:
+Structured OpenNeuro fields are populated first by dataset_schema.normalize(). This step only
+asks a model about missing fields and accepts an answer only when its source is an exact quote.
 """
 
+import json
+import os
+import argparse
+import time
+from pathlib import Path
 
-class Field(BaseModel):
-    value: str | None
-    source: str | None
+from dotenv import load_dotenv
+from openai import OpenAI
+
+load_dotenv()
+
+INPUT = Path("datasets.json")
+OUTPUT = Path("datasets.json")
+FIELDS = ("population", "longitudinal", "resting_state", "processed_data_available",
+          "field_strength", "paper_doi", "age_min", "age_max")
 
 
-class Extraction(BaseModel):
-    species: Field
-    strain: Field
-    shock_intensity_ma: Field
-    n_pairings: Field
-    tone_duration_s: Field
-    apparatus: Field
-
-
-def extract_parameters(methods_text):
-    r = client.chat.completions.create(
-        model=MODEL,
-        messages=[{"role": "user", "content": PROMPT + methods_text}],
-        response_format={"type": "json_schema",
-                         "json_schema": {"name": "extraction",
-                                         "schema": Extraction.model_json_schema()}},
+def extract(text, missing):
+    client = OpenAI(
+        base_url=os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
+        api_key=os.environ["OPENROUTER_API_KEY"], timeout=60, max_retries=2,
     )
-    content = r.choices[0].message.content
-    if not content:
-        raise RuntimeError("empty response")
-    return Extraction.model_validate_json(content).model_dump()
+    properties = {}
+    for key in missing:
+        properties[key] = {
+            "type": "object",
+            "properties": {
+                "value": {"type": ["string", "number", "boolean", "null"]},
+                "source": {"type": ["string", "null"]},
+            },
+            "required": ["value", "source"],
+            "additionalProperties": False,
+        }
+    response = client.chat.completions.create(
+        model=os.getenv("LLM_MODEL", "google/gemma-4-26b-a4b-it:free"),
+        messages=[
+            {"role": "system", "content": (
+                "Extract dataset facts only when explicitly stated in the supplied metadata. "
+                "Do not infer, calculate, or guess. Return null for absent information. "
+                "A source must be copied exactly from the supplied text. Ages are in years."
+            )},
+            {"role": "user", "content": "Fields: " + ", ".join(missing) + "\nTEXT:\n" + text[:18000]},
+        ],
+        response_format={"type": "json_schema", "json_schema": {
+            "name": "dataset_metadata", "strict": True,
+            "schema": {"type": "object", "properties": properties,
+                       "required": list(properties), "additionalProperties": False},
+        }},
+    )
+    return json.loads(response.choices[0].message.content or "{}")
 
 
-def extract_patiently(text, tries=5):
-    for i in range(tries):
-        try:
-            return extract_parameters(text)
-        except Exception as e:
-            if "429" not in str(e) and "503" not in str(e):
-                raise
-            wait = 60 * (i + 1)
-            print(f"busy, waiting {wait}s")
-            time.sleep(wait)
-    raise RuntimeError("gave up")
-
-
-def load(path):
-    return json.load(open(path, encoding="utf-8")) if os.path.exists(path) else {}
-
-
-records = json.load(open("papers.json", encoding="utf-8"))
-out = load("extractions_qwen.json")
-done = set(load("extractions.json")) | set(out)
-
-processed = 0
-failures = 0
-for rec in records:
-    if rec["pmcid"] in done:
-        continue
-    if processed >= LIMIT:
-        break
-    t0 = time.time()
-    try:
-        out[rec["pmcid"]] = extract_patiently(rec["methods_text"])
-        failures = 0
-    except Exception as e:
-        print("failed", rec["pmcid"], e)
-        failures += 1
-        if failures >= 3:
-            print("3 failures in a row, stopping")
+def main():
+    parser = argparse.ArgumentParser(description="Fill missing dataset metadata conservatively.")
+    parser.add_argument("--limit", type=int, default=int(os.getenv("LLM_EXTRACTION_LIMIT", "20")),
+                        help="Maximum number of model calls this run (default: 20).")
+    args = parser.parse_args()
+    if not INPUT.exists():
+        raise SystemExit("datasets.json is missing. Run `python parse.py` first.")
+    datasets = json.loads(INPUT.read_text(encoding="utf-8"))
+    if not os.getenv("OPENROUTER_API_KEY"):
+        print("OPENROUTER_API_KEY is not configured; unresolved fields will stay not stated.")
+        return
+    progress_path = Path("extract_progress.json")
+    processed_ids = set(json.loads(progress_path.read_text(encoding="utf-8"))) if progress_path.exists() else set()
+    calls = 0
+    for index, dataset in enumerate(datasets, 1):
+        # Current GraphQL fields can include text metadata; future API fields can add README text here.
+        text = dataset.get("metadata_text") or dataset.get("description", "")
+        missing = [key for key in FIELDS if dataset["fields"].get(key, {}).get("status") == "not_stated"]
+        if dataset["dataset_id"] in processed_ids or not text.strip() or not missing:
+            continue
+        if calls >= max(0, args.limit):
             break
-        continue
-    processed += 1
-    json.dump(out, open("extractions_qwen.json", "w", encoding="utf-8"),
-              indent=1, ensure_ascii=False)
-    print(f"{rec['pmcid']} done in {time.time() - t0:.0f}s")
-    time.sleep(5)
-    
+        calls += 1
+        try:
+            result = extract(text, missing)
+        except Exception as exc:
+            print(f"Extraction failed for {dataset['dataset_id']}: {str(exc)[:120]}")
+            continue
+        for key in missing:
+            field = result.get(key) or {}
+            value, quote = field.get("value"), field.get("source")
+            if value is None or not quote or quote not in text:
+                continue
+            dataset["fields"][key] = {"value": value, "status": "stated", "source": quote}
+        processed_ids.add(dataset["dataset_id"])
+        progress_path.write_text(json.dumps(sorted(processed_ids), indent=2), encoding="utf-8")
+        OUTPUT.write_text(json.dumps(datasets, ensure_ascii=False, indent=2), encoding="utf-8")
+        if index % 10 == 0:
+            print(f"Processed {index}/{len(datasets)} datasets")
+        time.sleep(float(os.getenv("LLM_REQUEST_DELAY", "1")))
+    OUTPUT.write_text(json.dumps(datasets, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"Saved evidence-checked metadata to {OUTPUT}")
+    print(f"Used {calls} model calls this run; run again to continue from saved progress.")
+
+
+if __name__ == "__main__":
+    main()

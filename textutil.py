@@ -22,7 +22,20 @@ def quote_numbers(quote):
               if w in COUNT_WORDS}
     return found
 
-
+def verify(extraction, text, label=""):
+    t = squash(text)
+    for name, f in extraction.items():
+        if f["value"] is None:
+            continue
+        reason = None
+        if not f["source"] or squash(f["source"]) not in t:
+            reason = "no valid quote"
+        elif not supported(name, f["value"], f["source"]):
+            reason = "value not supported by quote"
+        if reason:
+            print(f"dropped {label} {name} = {f['value']!r} ({reason}): {(f['source'] or '')[:160]}")
+            extraction[name] = {"value": None, "source": None}
+    return extraction
 
 
 
@@ -30,13 +43,3 @@ def squash(s):
     return " ".join(s.split())
 
 
-def verify(extraction, text):
-    t = squash(text)
-    for name, f in extraction.items():
-        if f["value"] is None:
-            continue
-        if (not f["source"] or squash(f["source"]) not in t
-                or not supported(name, f["value"], f["source"])):
-            print("unverified, dropped:", name)
-            extraction[name] = {"value": None, "source": None}
-    return extraction
