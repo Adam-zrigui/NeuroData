@@ -5,10 +5,10 @@ papers/
 papers.json
 extractions.json
 __pycache__/
-*.json
 .cache/
 openneuro_raw.json
 datasets.json
 web/node_modules/
 web/.next/
 web/.env.local
+extract_progress.json

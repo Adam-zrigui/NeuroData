@@ -1,6 +1,7 @@
 """Hybrid keyword/vector retrieval and evidence-based requirement explanations."""
 
 import os
+from functools import lru_cache
 
 from dotenv import load_dotenv
 from pgvector.psycopg import register_vector
@@ -11,9 +12,14 @@ import database
 load_dotenv()
 
 
+@lru_cache(maxsize=1)
+def _model():
+    """Load the embedding model once per process instead of on every query."""
+    return SentenceTransformer(os.getenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2"))
+
+
 def _embedding(text):
-    model = SentenceTransformer(os.getenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2"))
-    return model.encode(text, normalize_embeddings=True).tolist()
+    return _model().encode(text, normalize_embeddings=True).tolist()
 
 
 def _value(fields, name):

@@ -1,8 +1,15 @@
 # NeuroData Finder
 
-NeuroData Finder helps students and small research groups find public neuroimaging datasets from a plain-language request. The v1 scope is OpenNeuro MRI/fMRI metadata. Search returns ranked dataset links and shows which stated requirements are met, not met, or not stated, with source evidence where available.
+NeuroData Finder helps students and small research groups find public neuroimaging datasets from a plain-language request, for example *"resting-state fMRI in adults over 60 with a motor task"*. The v1 scope is OpenNeuro MRI/fMRI metadata.
 
-The project indexes metadata only. It does not download, store, or serve imaging files. Results are suggestions; read the source dataset's documentation before relying on a match.
+**How it works:** the request is parsed into visible, editable filters. Candidates are ranked with hybrid retrieval (PostgreSQL full-text plus pgvector similarity, merged with reciprocal rank fusion). Each result shows whether every stated requirement is `met`, `not_met` or `not_stated`, with source evidence where available.
+
+**Design choices:**
+- Metadata only. No imaging files are downloaded, stored or served.
+- LLM extraction keeps a value only when the model returns an exact quote found in the source text; otherwise the field stays `not_stated`.
+- Results are suggestions. Read the source dataset's documentation before relying on a match.
+
+**Status:** the pipeline, API and demo UI run end to end. A human-judged evaluation set is not yet included, so no retrieval metrics are reported (see "Evaluation and release status").
 
 ## Current workflow
 

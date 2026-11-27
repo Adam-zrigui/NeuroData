@@ -37,7 +37,7 @@ def parse_rules(text: str) -> ParsedQuery:
     lower = text.lower()
     modalities = []
     for name, pattern in (
-        ("fmri", r"\bf\s?-?mri\b|functional mri|bold"),
+        ("fmri", r"\bf\s?-?mri\b|functional mri|\bbold\b"),
         ("mri", r"\bmri\b|structural mri|diffusion mri"),
     ):
         if re.search(pattern, lower) and name not in modalities:
