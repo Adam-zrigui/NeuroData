@@ -12,3 +12,8 @@ web/node_modules/
 web/.next/
 web/.env.local
 extract_progress.json
+clean_extractions.json
+cue_types.json
+extractions_qwen.json
+parser.tests.json
+parser_tests.json

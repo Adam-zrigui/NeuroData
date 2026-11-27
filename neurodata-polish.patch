@@ -1,0 +1,104 @@
+From c38012f786f324df41ba7f863759e3464a2204c1 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Fri, 27 Nov 2026 11:48:09 +0100
+Subject: [PATCH] Fix .gitignore hiding web config, cache embedding model,
+ tighten README
+
+- Replace blanket *.json ignore with specific generated files so
+  web/package.json, web/tsconfig.json and eval_set.json can be tracked
+- Load the sentence-transformers model once via lru_cache
+- Add word boundary to the bold regex in rule-based query parsing
+- Rewrite README intro: how it works, design choices, status
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01N37uxPkhStHjGsEorLZfa2
+---
+ .gitignore     |  2 +-
+ README.md      | 11 +++++++++--
+ parse_query.py |  2 +-
+ search_core.py | 10 ++++++++--
+ 4 files changed, 19 insertions(+), 6 deletions(-)
+
+diff --git a/.gitignore b/.gitignore
+index 193efbd..01f5422 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -5,10 +5,10 @@ papers/
+ papers.json
+ extractions.json
+ __pycache__/
+-*.json
+ .cache/
+ openneuro_raw.json
+ datasets.json
+ web/node_modules/
+ web/.next/
+ web/.env.local
++extract_progress.json
+diff --git a/README.md b/README.md
+index 4bf142f..2281e54 100644
+--- a/README.md
++++ b/README.md
+@@ -1,8 +1,15 @@
+ # NeuroData Finder
+ 
+-NeuroData Finder helps students and small research groups find public neuroimaging datasets from a plain-language request. The v1 scope is OpenNeuro MRI/fMRI metadata. Search returns ranked dataset links and shows which stated requirements are met, not met, or not stated, with source evidence where available.
++NeuroData Finder helps students and small research groups find public neuroimaging datasets from a plain-language request, for example *"resting-state fMRI in adults over 60 with a motor task"*. The v1 scope is OpenNeuro MRI/fMRI metadata.
+ 
+-The project indexes metadata only. It does not download, store, or serve imaging files. Results are suggestions; read the source dataset's documentation before relying on a match.
++**How it works:** the request is parsed into visible, editable filters. Candidates are ranked with hybrid retrieval (PostgreSQL full-text plus pgvector similarity, merged with reciprocal rank fusion). Each result shows whether every stated requirement is `met`, `not_met` or `not_stated`, with source evidence where available.
++
++**Design choices:**
++- Metadata only. No imaging files are downloaded, stored or served.
++- LLM extraction keeps a value only when the model returns an exact quote found in the source text; otherwise the field stays `not_stated`.
++- Results are suggestions. Read the source dataset's documentation before relying on a match.
++
++**Status:** the pipeline, API and demo UI run end to end. A human-judged evaluation set is not yet included, so no retrieval metrics are reported (see "Evaluation and release status").
+ 
+ ## Current workflow
+ 
+diff --git a/parse_query.py b/parse_query.py
+index e03ee87..1a0a868 100644
+--- a/parse_query.py
++++ b/parse_query.py
+@@ -37,7 +37,7 @@ def parse_rules(text: str) -> ParsedQuery:
+     lower = text.lower()
+     modalities = []
+     for name, pattern in (
+-        ("fmri", r"\bf\s?-?mri\b|functional mri|bold"),
++        ("fmri", r"\bf\s?-?mri\b|functional mri|\bbold\b"),
+         ("mri", r"\bmri\b|structural mri|diffusion mri"),
+     ):
+         if re.search(pattern, lower) and name not in modalities:
+diff --git a/search_core.py b/search_core.py
+index 9c313f0..685ccda 100644
+--- a/search_core.py
++++ b/search_core.py
+@@ -1,6 +1,7 @@
+ """Hybrid keyword/vector retrieval and evidence-based requirement explanations."""
+ 
+ import os
++from functools import lru_cache
+ 
+ from dotenv import load_dotenv
+ from pgvector.psycopg import register_vector
+@@ -11,9 +12,14 @@ import database
+ load_dotenv()
+ 
+ 
++@lru_cache(maxsize=1)
++def _model():
++    """Load the embedding model once per process instead of on every query."""
++    return SentenceTransformer(os.getenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2"))
++
++
+ def _embedding(text):
+-    model = SentenceTransformer(os.getenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2"))
+-    return model.encode(text, normalize_embeddings=True).tolist()
++    return _model().encode(text, normalize_embeddings=True).tolist()
+ 
+ 
+ def _value(fields, name):
+-- 
+2.43.0
+
